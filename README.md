@@ -11,3 +11,24 @@
 </p>
 
 <br>
+
+# About
+
+**Arkane** is a shell generator that creates **reverse** and **bind** shells in multiple languages ​​and platforms, delivering ready-to-use payloads for quick deployment.
+
+<br>
+
+# Installation
+
+```bash
+git clone https://github.com/0xf0xy/Arkane.git
+cd Arkane
+pip install .
+arkane -h
+```
+
+<br>
+
+# License
+
+This project is licensed under the [MIT License](./LICENSE).
